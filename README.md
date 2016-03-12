@@ -3,6 +3,8 @@ Noto Sans CJK JP min
 
 This is Subset of the [Noto Sans CJK JP](http://www.google.com/get/noto/help/cjk/) for the size down.
 
+- [DEMO](https://hirofumii.github.io/Noto-Sans-CJK-JP.min/)
+
 
 Typefaces
 ---------
