@@ -67,8 +67,30 @@ html {
         url('../fonts/NotoSansCJKjp/Black/NotoSansCJKjp-Black.min.ttf') format('truetype');
 }
 
+@font-face {
+    font-family: 'Noto Sans Japanese Mono';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/NotoSansCJKjp/Mono-Regular/NotoSansMonoCJKjp-Regular.min.woff2') format('woff2'),
+        url('../fonts/NotoSansCJKjp/Mono-Regular/NotoSansMonoCJKjp-Regular.min.woff') format('woff'),
+        url('../fonts/NotoSansCJKjp/Mono-Regular/NotoSansMonoCJKjp-Regular.min.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Noto Sans Japanese Mono';
+    font-style: normal;
+    font-weight: 700;
+    src: url('../fonts/NotoSansCJKjp/Mono-Bold/NotoSansMonoCJKjp-Bold.min.woff2') format('woff2'),
+        url('../fonts/NotoSansCJKjp/Mono-Bold/NotoSansMonoCJKjp-Bold.min.woff') format('woff'),
+        url('../fonts/NotoSansCJKjp/Mono-Bold/NotoSansMonoCJKjp-Bold.min.ttf') format('truetype');
+}
+
 .noto {
     font-family: 'Noto Sans Japanese', serif;
+    font-style: normal;
+}
+
+.noto.\+mono {
+    font-family: 'Noto Sans Japanese Mono';
     font-style: normal;
 }
 
@@ -144,19 +166,20 @@ html {
 }
 
 .main_content h1 {
-    font-size: 3.0rem;
+    font-size: 2.5rem;
+    font-weight: 500;
 }
 
 .main_content p {
     font-size: 1.6rem;
     line-height: 2;
-    font-family: Helvetica Neue,Helvetica,Arial,ヒラギノ角ゴ Pro W3,Hiragino Kaku Gothic Pro,メイリオ,Meiryo,sans-serif;
+    text-align: justify;
+
 }
 
 .main_content ul {
     font-size: 1.8rem;
     line-height: 2;
-    font-family: Helvetica Neue,Helvetica,Arial,ヒラギノ角ゴ Pro W3,Hiragino Kaku Gothic Pro,メイリオ,Meiryo,sans-serif;
 }
 
 .main_content_font h1 {
@@ -166,7 +189,12 @@ html {
 }
 
 .main_content_font p {
-    font-size: 3.0rem;
+    font-size: 2.5rem;
+    line-height: 1.5;
+    border: 1px dashed #aaa;
+    padding: .5em;
+    box-sizing: border-box;
+    border-radius: 5px;
 }
 
 #footer_wrap {
