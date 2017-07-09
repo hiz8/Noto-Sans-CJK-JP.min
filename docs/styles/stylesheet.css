@@ -1,0 +1,182 @@
+/* Any copyright is dedicated to the Public Domain.
+ * http://creativecommons.org/publicdomain/zero/1.0/ */
+
+html {
+    font-size: 62.5%;
+    background: #fafafa;
+    color: #1a1a1a;
+}
+
+/*
+* Noto Sans Japanese (japanese) http://www.google.com/fonts/earlyaccess
+*/
+@font-face {
+    font-family: 'Noto Sans Japanese';
+    font-style: normal;
+    font-weight: 100;
+    src: url('../fonts/NotoSansCJKjp-Thin.min.woff2') format('woff2'),
+        url('../fonts/NotoSansCJKjp-Thin.min.woff') format('woff'),
+        url('../fonts/NotoSansCJKjp-Thin.min.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Noto Sans Japanese';
+    font-style: normal;
+    font-weight: 200;
+    src: url('../fonts/NotoSansCJKjp-Light.min.woff2') format('woff2'),
+        url('../fonts/NotoSansCJKjp-Light.min.woff') format('woff'),
+        url('../fonts/NotoSansCJKjp-Light.min.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Noto Sans Japanese';
+    font-style: normal;
+    font-weight: 300;
+    src: url('../fonts/NotoSansCJKjp-DemiLight.min.woff2') format('woff2'),
+        url('../fonts/NotoSansCJKjp-DemiLight.min.woff') format('woff'),
+        url('../fonts/NotoSansCJKjp-DemiLight.min.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Noto Sans Japanese';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/NotoSansCJKjp-Regular.min.woff2') format('woff2'),
+        url('../fonts/NotoSansCJKjp-Regular.min.woff') format('woff'),
+        url('../fonts/NotoSansCJKjp-Regular.min.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Noto Sans Japanese';
+    font-style: normal;
+    font-weight: 500;
+    src: url('../fonts/NotoSansCJKjp-Medium.min.woff2') format('woff2'),
+        url('../fonts/NotoSansCJKjp-Medium.min.woff') format('woff'),
+        url('../fonts/NotoSansCJKjp-Medium.min.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Noto Sans Japanese';
+    font-style: normal;
+    font-weight: 700;
+    src: url('../fonts/NotoSansCJKjp-Bold.min.woff2') format('woff2'),
+        url('../fonts/NotoSansCJKjp-Bold.min.woff') format('woff'),
+        url('../fonts/NotoSansCJKjp-Bold.min.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Noto Sans Japanese';
+    font-style: normal;
+    font-weight: 900;
+    src: url('../fonts/NotoSansCJKjp-Black.min.woff2') format('woff2'),
+        url('../fonts/NotoSansCJKjp-Black.min.woff') format('woff'),
+        url('../fonts/NotoSansCJKjp-Black.min.ttf') format('truetype');
+}
+
+.noto {
+    font-family: 'Noto Sans Japanese', serif;
+    font-style: normal;
+}
+
+.noto.\+250 {
+    font-weight: 100;
+}
+
+.noto.\+300 {
+    font-weight: 200;
+}
+
+.noto.\+350 {
+    font-weight: 300;
+}
+
+.noto.\+400 {
+    font-weight: 400;
+}
+
+.noto.\+500 {
+    font-weight: 500;
+}
+
+.noto.\+700 {
+    font-weight: 700;
+}
+
+.noto.\+900 {
+    font-weight: 900;
+}
+
+#header_wrap {
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto 4rem;
+    padding: 0 1rem;
+    border-top: 5px solid #47b7cc;
+    box-sizing: border-box;
+}
+
+.main_content_wrap {
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    box-sizing: border-box;
+}
+
+.main_content_font_wrap {
+    width: 100%;
+    max-width: 960px;
+    margin: 5em auto 8em;
+    padding: 0 1rem;
+    box-sizing: border-box;
+}
+
+
+
+#project_title {
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-size: 2.0rem;
+    color: #47b7cc;
+}
+
+#project_tagline {
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+}
+
+.main_content .inner {
+    margin-bottom: 5rem;
+}
+
+.main_content h1 {
+    font-size: 3.0rem;
+}
+
+.main_content p {
+    font-size: 1.6rem;
+    line-height: 2;
+    font-family: Helvetica Neue,Helvetica,Arial,ヒラギノ角ゴ Pro W3,Hiragino Kaku Gothic Pro,メイリオ,Meiryo,sans-serif;
+}
+
+.main_content ul {
+    font-size: 1.8rem;
+    line-height: 2;
+    font-family: Helvetica Neue,Helvetica,Arial,ヒラギノ角ゴ Pro W3,Hiragino Kaku Gothic Pro,メイリオ,Meiryo,sans-serif;
+}
+
+.main_content_font h1 {
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-weight: 400;
+    font-size: 1.5rem;
+}
+
+.main_content_font p {
+    font-size: 3.0rem;
+}
+
+#footer_wrap {
+    width: 100%;
+    max-width: 640px;
+    margin: 5rem auto 0;
+    padding: 0 1rem;
+    box-sizing: border-box;
+    
+    font-size: 1.4rem;
+    line-height: 1.8;
+    font-family: Helvetica Neue,Helvetica,Arial,ヒラギノ角ゴ Pro W3,Hiragino Kaku Gothic Pro,メイリオ,Meiryo,sans-serif;
+}
