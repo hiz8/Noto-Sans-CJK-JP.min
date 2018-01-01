@@ -1,0 +1,18 @@
+{
+  "name": "noto-sans-cjk-jp.min",
+  "version": "1.0.0",
+  "description": "Subset of the Noto Sans CJK JP for the size down",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "hirofumii",
+  "license": "ISC",
+  "dependencies": {
+    "fontmin": "^0.9.6",
+    "gulp-rename": "^1.2.2",
+    "gulp-ttf2woff2": "^2.0.2"
+  },
+  "private": true
+}
