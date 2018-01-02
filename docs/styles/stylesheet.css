@@ -1,15 +1,25 @@
-/* Any copyright is dedicated to the Public Domain.
- * http://creativecommons.org/publicdomain/zero/1.0/ */
 
 html {
     font-size: 62.5%;
-    background: #fafafa;
+    background-color: #fafafa;
     color: #1a1a1a;
 }
 
-/*
-* Noto Sans Japanese (japanese) http://www.google.com/Fonts/NotoSansCJKjp/earlyaccess
-*/
+a:link {
+    color: #2C7FE8;
+}
+
+a:visited {
+    color: #2C7FE8;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+/**
+ * Noto Sans Japanese (japanese) http://www.google.com/Fonts/NotoSansCJKjp/earlyaccess
+ */
 @font-face {
     font-family: 'Noto Sans Japanese';
     font-style: normal;
@@ -94,12 +104,12 @@ html {
 }
 
 .noto {
-    font-family: 'Noto Sans Japanese', serif;
+    font-family: 'Noto Sans Japanese', sans-serif;
     font-style: normal;
 }
 
 .noto.\+mono {
-    font-family: 'Noto Sans Japanese Mono';
+    font-family: 'Noto Sans Japanese Mono', sans-serif;
     font-style: normal;
 }
 
@@ -136,7 +146,7 @@ html {
     max-width: 640px;
     margin: 0 auto 4rem;
     padding: 0 1rem;
-    border-top: 5px solid #47b7cc;
+    border-top: 5px solid #3055FF;
     box-sizing: border-box;
 }
 
@@ -156,16 +166,14 @@ html {
     box-sizing: border-box;
 }
 
-
-
 #project_title {
-    font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 2.0rem;
-    color: #47b7cc;
+    color: #3055FF;
 }
 
 #project_tagline {
-    font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 1.5rem;
     font-weight: 400;
 }
@@ -183,7 +191,6 @@ html {
     font-size: 1.6rem;
     line-height: 2;
     text-align: justify;
-
 }
 
 .main_content ul {
@@ -192,7 +199,7 @@ html {
 }
 
 .main_content_font h1 {
-    font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: 400;
     font-size: 1.5rem;
 }
@@ -206,14 +213,32 @@ html {
     border-radius: 5px;
 }
 
+.main_content_font p:focus {
+    border-color: #2C7FE8;
+}
+
 #footer_wrap {
     width: 100%;
     max-width: 640px;
     margin: 5rem auto 0;
     padding: 0 1rem;
     box-sizing: border-box;
-    
     font-size: 1.4rem;
     line-height: 1.8;
-    font-family: Helvetica Neue,Helvetica,Arial,ヒラギノ角ゴ Pro W3,Hiragino Kaku Gothic Pro,メイリオ,Meiryo,sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", メイリオ, Meiryo, sans-serif;
+}
+
+
+@media (max-width: 576px) {
+    .main_content h1 {
+        font-size: 2rem;
+    }
+
+    .main_content ul {
+        font-size: 1.6rem;
+    }
+
+    .main_content_font p {
+        font-size: 1.6rem;
+    }
 }
