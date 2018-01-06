@@ -3,21 +3,21 @@ Noto Sans CJK JP min
 
 This is Subset of the [Noto Sans CJK JP](http://www.google.com/get/noto/help/cjk/) for the size down.
 
-- [DEMO](https://hirofumii.github.io/Noto-Sans-CJK-JP.min/)
+- [DEMO](https://hirofumii.github.io/Noto-Sans-CJK-JP.min/#demo)
 
 
 Typefaces
 ---------
 
-- Black
-- Bold
-- Medium
-- Regular
-- DemiLight
-- Light
 - Thin
-- Mono-Bold
+- Light
+- DemiLight
+- Regular
+- Medium
+- Bold
+- Black
 - Mono-Regular
+- Mono-Bold
 
 
 Format
@@ -26,6 +26,22 @@ Format
 - WOFF
 - WOFF2
 - TTF
+
+
+Size
+----
+
+| Weight       | otf (Original) | ttf         | woff2       |
+|:-------------|:---------------|:------------|:------------|
+| Thin         | `14.4 MB`      | `977 KB`    | `434 KB`    |
+| Light        | `15.4 MB`      | `971 KB`    | `452 KB`    |
+| DemiLight    | `15.6 MB`      | `967 KB`    | `457 KB`    |
+| Regular      | `15.6 MB`      | `964 KB`    | `460 KB`    |
+| Medium       | `15.7 MB`      | `961 KB`    | `466 KB`    |
+| Bold         | `16.2 MB`      | `959 KB`    | `471 KB`    |
+| Black        | `16.5 MB`      | `961 KB`    | `470 KB`    |
+| Mono-Regular | `15.6 MB`      | `964 KB`    | `460 KB`    |
+| Mono-Bold    | `16.2 MB`      | `959 KB`    | `472 KB`    |
 
 
 Packaging Letters

@@ -141,13 +141,25 @@ a:hover {
     font-weight: 900;
 }
 
-#header_wrap {
+.projectHeader {
     width: 100%;
     max-width: 640px;
     margin: 0 auto 4rem;
     padding: 0 1rem;
     border-top: 5px solid #3055FF;
     box-sizing: border-box;
+}
+
+.projectHeader__title {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 2.0rem;
+    color: #3055FF;
+}
+
+.projectHeader__tagline {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 1.5rem;
+    font-weight: 400;
 }
 
 .main_content_wrap {
@@ -161,28 +173,16 @@ a:hover {
 .main_content_font_wrap {
     width: 100%;
     max-width: 960px;
-    margin: 5em auto 8em;
-    padding: 0 1rem;
+    margin: 3em auto 8em;
+    padding: 2em 1em 0;
     box-sizing: border-box;
-}
-
-#project_title {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 2.0rem;
-    color: #3055FF;
-}
-
-#project_tagline {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 1.5rem;
-    font-weight: 400;
 }
 
 .main_content .inner {
     margin-bottom: 5rem;
 }
 
-.main_content h1 {
+.headline {
     font-size: 2.5rem;
     font-weight: 500;
 }
@@ -198,22 +198,24 @@ a:hover {
     line-height: 2;
 }
 
-.main_content_font h1 {
+.demo__title {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: 400;
     font-size: 1.5rem;
+    margin: 0 0 1em;
 }
 
-.main_content_font p {
+.demo__text {
     font-size: 2.5rem;
     line-height: 1.5;
     border: 1px dashed #aaa;
     padding: .5em;
+    margin: 0 0 1em;
     box-sizing: border-box;
     border-radius: 5px;
 }
 
-.main_content_font p:focus {
+.demo__text:focus {
     border-color: #2C7FE8;
 }
 
