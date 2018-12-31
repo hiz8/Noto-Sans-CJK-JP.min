@@ -16,10 +16,10 @@ async function genTextsFromFile() {
 
   for (let i = 0; i < textDir.length; i++) {
     const textFile = textDir[i];
-    let filename = config.lettersPath + textFile;
+    let textFilePath = config.lettersPath + textFile;
 
     const letter = await fs.promises
-      .readFile(filename, 'utf-8')
+      .readFile(textFilePath, 'utf-8')
       .catch(err => console.error(err));
 
     letters += letter;
@@ -45,14 +45,14 @@ async function getSrcFonts() {
 }
 
 const subset = async () => {
-  const [texts, srcFonts] = await Promise.all([
+  const [text, srcFonts] = await Promise.all([
     genTextsFromFile(),
     getSrcFonts(),
   ]);
-  const tmpTextFile = 'glyph.txt';
+  const tmpTextFile = 'tmpTextFile.txt';
 
   await fs.promises
-    .writeFile(tmpTextFile, texts)
+    .writeFile(tmpTextFile, text)
     .catch(err => console.error(err));
 
   if (!fs.existsSync(config.outputPath)) {
