@@ -9,10 +9,5 @@
   "keywords": [],
   "author": "hirofumii",
   "license": "ISC",
-  "dependencies": {
-    "fontmin": "^0.9.6",
-    "gulp-rename": "^1.2.2",
-    "gulp-ttf2woff2": "^2.0.2"
-  },
   "private": true
 }

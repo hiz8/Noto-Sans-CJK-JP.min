@@ -1,62 +1,95 @@
-const fs        = require('fs');
-const Fontmin   = require('fontmin');
-const ttf2woff2 = require('gulp-ttf2woff2');
-const rename    = require('gulp-rename');
+const fs = require('fs');
+const exec = require('child_process').execSync;
 
-const conifg = {
-    lettersPath: './Letters/',
-    input: 'src/*.otf',
-    output: 'build/fonts'
-}
-
-const build = () => {
-    return new Promise((resolve, reject) => {
-        fs.readdir(conifg.lettersPath, function(err, items) {
-            if (err) reject(err);
-
-            let test = '';
-            let num = 0;
-
-            items.forEach((element, index) => {
-                let filename = conifg.lettersPath + element;
-
-                fs.readFile(filename, 'utf-8', (err, data) => {
-                    test += data;
-                    num++;
-
-                    if (num === items.length) {
-                        resolve(test);
-                    }
-                });
-            });
-            
-        });
-    }).then(test => {
-        const fontmin = new Fontmin()
-            .src(conifg.input)
-            .use(Fontmin.otf2ttf())
-            .use(Fontmin.glyph({ 
-                text: test
-            }))
-            .use(Fontmin.ttf2woff({
-                deflate: true
-            }))
-            .use(ttf2woff2({
-                clone: true
-            }))
-            .use(rename({
-                suffix: '.min'
-            }))
-            .dest(conifg.output);
-
-        fontmin.run((err, files) => {
-            if (err) reject(err);
-
-            console.log(files[0]);
-        });
-    }).catch(err => {
-        throw err;
-    });;
+const config = {
+  lettersPath: './Letters/',
+  inputPath: './src/',
+  outputPath: './dist/',
 };
 
-module.exports = build();
+async function genTextsFromFile() {
+  const textDir = await fs.promises
+    .readdir(config.lettersPath)
+    .catch(err => console.error(err));
+  let letters = '';
+  let num = 0;
+
+  for (let i = 0; i < textDir.length; i++) {
+    const textFile = textDir[i];
+    let filename = config.lettersPath + textFile;
+
+    const letter = await fs.promises
+      .readFile(filename, 'utf-8')
+      .catch(err => console.error(err));
+
+    letters += letter;
+    num++;
+
+    if (num === textDir.length) {
+      return letters;
+    }
+  }
+}
+
+async function getSrcFonts() {
+  const inputDir = await fs.promises
+    .readdir(config.inputPath)
+    .catch(err => console.error(err));
+
+  return inputDir.filter(fontFile => {
+    return (
+      fs.statSync(config.inputPath + fontFile).isFile() &&
+      /.*\.otf$/.test(fontFile)
+    );
+  });
+}
+
+const subset = async () => {
+  const [texts, srcFonts] = await Promise.all([
+    genTextsFromFile(),
+    getSrcFonts(),
+  ]);
+  const tmpTextFile = 'glyph.txt';
+
+  await fs.promises
+    .writeFile(tmpTextFile, texts)
+    .catch(err => console.error(err));
+
+  if (!fs.existsSync(config.outputPath)) {
+    fs.mkdirSync(config.outputPath);
+  }
+
+  srcFonts.forEach((fontFile, fontIndex) => {
+    const reg = /(.*)(?:\.([^.]+$))/;
+    const fontName = fontFile.match(reg)[1];
+
+    const extensions = ['ttf', 'woff', 'woff2'];
+
+    extensions.forEach((ext, extIndex) => {
+      const flavorOpt =
+        ext === 'woff' || ext === 'woff2' ? `--flavor=${ext}` : '';
+      const command = `pyftsubset ./${
+        config.inputPath
+      }${fontFile} --text-file=./${tmpTextFile} --layout-features='palt' --output-file=./${
+        config.outputPath
+      }${fontName}.min.${ext} --no-hinting ${flavorOpt}`;
+
+      try {
+        exec(command);
+      } catch (e) {
+        console.error(err);
+      } finally {
+        if (
+          fontIndex + 1 >= srcFonts.length &&
+          extIndex + 1 >= extensions.length
+        ) {
+          fs.unlink(tmpTextFile, err => {
+            if (err) throw err;
+          });
+        }
+      }
+    });
+  });
+};
+
+module.exports = subset();
