@@ -1,6 +1,6 @@
 {
   "name": "noto-sans-cjk-jp.min",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Subset of the Noto Sans CJK JP for the size down",
   "main": "index.js",
   "scripts": {
