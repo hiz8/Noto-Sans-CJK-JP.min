@@ -27,7 +27,7 @@ This is Subset of the [Noto Sans CJK JP](http://www.google.com/get/noto/help/cjk
 ## Size
 
 | Weight        | otf (Original) | ttf       | woff2     |
-| :------------ | :------------- | :------- -| :-------- |
+| :------------ | :------------- | :-------- | :-------- |
 | Thin          | `14.２ MB`      | `950 KB`  | `635 KB`  |
 | Light         | `15.６ MB`      | `991 KB`  | `679 KB`  |
 | DemiLight     | `15.6 MB`      | `983 KB`  | `690 KB`  |
