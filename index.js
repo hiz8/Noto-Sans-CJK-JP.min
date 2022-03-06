@@ -67,10 +67,10 @@ const subset = async () => {
 
     extensions.forEach((ext, extIndex) => {
       const flavorOpt =
-        ext === 'woff' || ext === 'woff2' ? `--flavor=${ext}` : '';
+        ext === 'woff' || ext === 'woff2' ? `--flavor=${ext} --with-zopfli --desubroutinize` : '';
       const command = `pyftsubset ./${
         config.inputPath
-      }${fontFile} --text-file=./${tmpTextFile} --layout-features='palt' --output-file=./${
+      }${fontFile} --text-file=./${tmpTextFile} --layout-features='*' --output-file=./${
         config.outputPath
       }${fontName}.min.${ext} --no-hinting ${flavorOpt}`;
 
