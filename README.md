@@ -13,8 +13,10 @@ This is Subset of the [Noto Sans CJK JP](http://www.google.com/get/noto/help/cjk
 - Medium
 - Bold
 - Black
+- Variable
 - Mono-Regular
 - Mono-Bold
+- Mono-Variable
 
 ## Format
 
@@ -24,17 +26,19 @@ This is Subset of the [Noto Sans CJK JP](http://www.google.com/get/noto/help/cjk
 
 ## Size
 
-| Weight       | otf (Original) | ttf      | woff2    |
-| :----------- | :------------- | :------- | :------- |
-| Thin         | `14.２ MB`      | `950 KB` | `635 KB` |
-| Light        | `15.６ MB`      | `991 KB` | `679 KB` |
-| DemiLight    | `15.6 MB`      | `983 KB` | `690 KB` |
-| Regular      | `15.７ MB`      | `980 KB` | `694 KB` |
-| Medium       | `15.7 MB`      | `976 KB` | `699 KB` |
-| Bold         | `16.2 MB`      | `983 KB` | `706 KB` |
-| Black        | `17.0 MB`      | `990 KB` | `692 KB` |
-| Mono-Regular | `15.6 MB`      | `990 KB` | `693 KB` |
-| Mono-Bold    | `16.2 MB`      | `994 KB` | `704 KB` |
+| Weight        | otf (Original) | ttf       | woff2     |
+| :------------ | :------------- | :------- -| :-------- |
+| Thin          | `14.２ MB`      | `950 KB`  | `635 KB`  |
+| Light         | `15.６ MB`      | `991 KB`  | `679 KB`  |
+| DemiLight     | `15.6 MB`      | `983 KB`  | `690 KB`  |
+| Regular       | `15.７ MB`      | `980 KB`  | `694 KB`  |
+| Medium        | `15.7 MB`      | `976 KB`  | `699 KB`  |
+| Bold          | `16.2 MB`      | `983 KB`  | `706 KB`  |
+| Black         | `17.0 MB`      | `990 KB`  | `692 KB`  |
+| Variable      | `29.3 MB`      | `1.96 MB` | `1.08 MB` |
+| Mono-Regular  | `15.6 MB`      | `990 KB`  | `693 KB`  |
+| Mono-Bold     | `16.2 MB`      | `994 KB`  | `704 KB`  |
+| Mono-Variable | `28.8 MB`      | `1.94 MB` | `1.08 MB` |
 
 ## Packaging Letters
 
@@ -87,3 +91,5 @@ This is Subset of the [Noto Sans CJK JP](http://www.google.com/get/noto/help/cjk
 - Opera
 - iOS 4.3+
 - Android 2.2+
+
+Variable fonts feature is available in [supported browsers](https://caniuse.com/variable-fonts).
