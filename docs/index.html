@@ -17,6 +17,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" media="screen" href="styles/stylesheet.css" />
+    <script src="./scripts.js"></script>
   </head>
   <body>
     <!-- HEADER -->
@@ -61,17 +62,21 @@
             <p class="noto">
               2021年4月に Noto Sans CJK の最新バージョンである 2.004
               がリリースされました。<br />
-              Noto Sans CJK は　2014年に最初のリリースが行われた後も継続的にアップデートを行っており、
-              香港への対応や “㋿” の合字の追加、可変フォントの対応などの多数の改良が実施されています。2022年3月時点でのその最新のバージョンが 2.004 となります。
-              各バージョンを含めた更新内容の詳細は以下の pdf に乗っております。(この pdf 自体は
-              Noto Sans CJK の Adobe版である源ノ角ゴシック
-              に対するものですが、Noto Sans CJK にも当てはまる内容となります)
+              Noto Sans CJK
+              は　2014年に最初のリリースが行われた後も継続的にアップデートを行っており、
+              香港への対応や “㋿”
+              の合字の追加、可変フォントの対応などの多数の改良が実施されています。2022年3月時点でのその最新のバージョンが
+              2.004 となります。 各バージョンを含めた更新内容の詳細は以下の pdf
+              に乗っております。(この pdf 自体は Noto Sans CJK の
+              Adobe版である源ノ角ゴシック に対するものですが、Noto Sans CJK
+              にも当てはまる内容となります)
             </p>
             <p class="noto">
               <a
                 href="https://raw.githubusercontent.com/adobe-fonts/source-han-sans/release/SourceHanSansReadMe.pdf"
                 target="_blank"
-                >Source Han Sans Version 2.004 ReadMe (Released 2021-04-28) - SourceHanSansReadMe.pdf</a
+                >Source Han Sans Version 2.004 ReadMe (Released 2021-04-28) -
+                SourceHanSansReadMe.pdf</a
               >
             </p>
           </section>
@@ -129,12 +134,55 @@
               あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモリーオ市、郊外のぎらぎらひかる草の波。
             </dd>
             <dt class="demo__title">Variable</dt>
-            <dd class="demo__text noto +vf" contenteditable="true">
-              あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモリーオ市、郊外のぎらぎらひかる草の波。
+            <dd id="noto-vf-wrapper" style="margin: 0 0 2em">
+              <div class="demo__text noto +vf viewer" contenteditable="true">
+                あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモリーオ市、郊外のぎらぎらひかる草の波。
+              </div>
+              <form
+                class="slider"
+                oninput="result.value=parseInt(slider.value)"
+              >
+                <input
+                  type="range"
+                  id="noto-vf-slider"
+                  class="slider__input"
+                  name="slider"
+                  value="400"
+                  min="100"
+                  max="900"
+                  autocomplete="off"
+                />
+                <output class="slider__output" name="result" for="slider"
+                  >400</output
+                >
+              </form>
             </dd>
             <dt class="demo__title">Mono-Variable</dt>
-            <dd class="demo__text noto +vf +mono" contenteditable="true">
-              あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモリーオ市、郊外のぎらぎらひかる草の波。
+            <dd id="noto-vf-mono-wrapper" style="margin: 0 0 2em">
+              <div
+                class="demo__text noto +vf +mono viewer"
+                contenteditable="true"
+              >
+                あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモリーオ市、郊外のぎらぎらひかる草の波。
+              </div>
+              <form
+                class="slider"
+                oninput="result.value=parseInt(slider.value)"
+              >
+                <input
+                  type="range"
+                  id="noto-vf-mono-slider"
+                  class="slider__input"
+                  name="slider"
+                  value="400"
+                  min="400"
+                  max="700"
+                  autocomplete="off"
+                />
+                <output class="slider__output" name="result" for="slider"
+                  >400</output
+                >
+              </form>
             </dd>
           </dl>
         </div>
@@ -178,7 +226,13 @@
               <li>Android 2.2+</li>
               <li>iOS 4.3+</li>
             </ul>
-            <p>Variable fonts は<a href="https://caniuse.com/variable-fonts" target="_blank">サポートブラウザ</a>でのみ使用できます。</p>
+            <p class="noto">
+              Variable fonts は<a
+                href="https://caniuse.com/variable-fonts"
+                target="_blank"
+                >サポートブラウザ</a
+              >でのみ使用できます。
+            </p>
           </section>
           <section class="inner">
             <h1 class="headline noto +500">ダウンロード</h1>
