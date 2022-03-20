@@ -2,7 +2,7 @@
 
 This is Subset of the [Noto Sans CJK JP](http://www.google.com/get/noto/help/cjk/) (v2.004) for the size down.
 
-- [DEMO](https://hirofumii.github.io/Noto-Sans-CJK-JP.min/#demo)
+- [DEMO](https://hiz8.github.io/Noto-Sans-CJK-JP.min/#demo)
 
 ## Typefaces
 
@@ -28,10 +28,10 @@ This is Subset of the [Noto Sans CJK JP](http://www.google.com/get/noto/help/cjk
 
 | Weight        | otf (Original) | ttf       | woff2     |
 | :------------ | :------------- | :-------- | :-------- |
-| Thin          | `14.２ MB`      | `950 KB`  | `635 KB`  |
-| Light         | `15.６ MB`      | `991 KB`  | `679 KB`  |
+| Thin          | `14.２ MB`     | `950 KB`  | `635 KB`  |
+| Light         | `15.６ MB`     | `991 KB`  | `679 KB`  |
 | DemiLight     | `15.6 MB`      | `983 KB`  | `690 KB`  |
-| Regular       | `15.７ MB`      | `980 KB`  | `694 KB`  |
+| Regular       | `15.７ MB`     | `980 KB`  | `694 KB`  |
 | Medium        | `15.7 MB`      | `976 KB`  | `699 KB`  |
 | Bold          | `16.2 MB`      | `983 KB`  | `706 KB`  |
 | Black         | `17.0 MB`      | `990 KB`  | `692 KB`  |
@@ -93,3 +93,7 @@ This is Subset of the [Noto Sans CJK JP](http://www.google.com/get/noto/help/cjk
 - Android 2.2+
 
 Variable fonts feature is available in [supported browsers](https://caniuse.com/variable-fonts).
+
+## Related projects
+
+- [Noto-Serif-CJK-JP.min](https://github.com/hiz8/Noto-Serif-CJK-JP.min)
