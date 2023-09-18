@@ -2,7 +2,9 @@
 
 This is Subset of the [Noto Sans CJK JP](http://www.google.com/get/noto/help/cjk/) (v2.004) for the size down.
 
-- [DEMO](https://hiz8.github.io/Noto-Sans-CJK-JP.min/#demo)
+## Demo
+
+[日本語](https://hiz8.github.io/Noto-Sans-CJK-JP.min/) / [English](https://hiz8.github.io/Noto-Sans-CJK-JP.min/en/)
 
 ## Typefaces
 
