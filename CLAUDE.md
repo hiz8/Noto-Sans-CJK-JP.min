@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Purpose
 
-This repo produces a size-reduced subset of the [Noto Sans CJK JP](http://www.google.com/get/noto/help/cjk/) font (v2.004). It is not a runtime library — it is a build pipeline that takes upstream `.otf` files and emits `.min.ttf`, `.min.woff`, and `.min.woff2` covering only the character ranges declared under `Letters/`.
+This repo produces a size-reduced subset of the [Noto Sans CJK JP](http://www.google.com/get/noto/help/cjk/) font (v2.004). It is not a runtime library — it is a build pipeline that takes upstream `.otf` (or `.ttf`) source files and emits `.min.ttf`, `.min.woff`, and `.min.woff2` covering only the character ranges declared under `Letters/`.
 
 ## Build pipeline
 
@@ -13,7 +13,7 @@ This repo produces a size-reduced subset of the [Noto Sans CJK JP](http://www.go
   1. Concatenates every file under `Letters/` into an in-memory string — the union of glyphs to keep. (No temp file on disk.)
   2. Scans `src/` for `*.otf` and `*.ttf` source fonts.
   3. For each font × `{sfnt, woff, woff2}` calls `harfbuzzjs/hb-subset.wasm` directly to subset the input, **dropping the `GSUB`, `GPOS`, `GDEF`, `kern`, `morx`, `mort` tables** via `HB_SUBSET_SETS_DROP_TABLE_TAG`, then wraps the result in the requested format via [`fontverter`](https://github.com/papandreou/fontverter). The output is written as `<name>.min.{ttf,woff,woff2}` under `dist/`. The output preserves the input outline format (CFF/CFF2 for OTF, glyf for TTF) under the `.min.ttf` extension — `.min.ttf` for an OTF source is technically OTF-inside-a-.ttf-named-file, which every browser handles.
-- Stripping the layout tables is the main size reduction lever: CJK GSUB lookups (alternates, vertical forms, etc.) and GPOS kerning data dwarf the actual glyph outlines for a small subset. Browsers fall back to default glyph mapping without GSUB/GPOS, which is fine for Web body text. If a future build needs vertical writing or kerning, narrow `DROP_TABLES` in `index.js`.
+- Stripping the layout tables is the main size reduction lever: CJK GSUB lookups (alternates, vertical forms, etc.) and GPOS kerning data dwarf the actual glyph outlines for a small subset. Browsers fall back to default glyph mapping without GSUB/GPOS, which is fine for horizontal Web body text. Trade-off: vertical writing (`vert`/`vrt2`) and a few CJK punctuation alternates regress because they rely on GSUB substitutions; kerning is lost with GPOS. If a future build needs any of those, narrow `DROP_TABLES` in `index.js`.
 
 ## Prerequisites
 
