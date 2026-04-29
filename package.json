@@ -6,6 +6,10 @@
   "scripts": {
     "start": "node index.js"
   },
+  "dependencies": {
+    "fontverter": "^2.0.0",
+    "harfbuzzjs": "^0.10.3"
+  },
   "keywords": [],
   "author": "hirofumii",
   "license": "ISC",
