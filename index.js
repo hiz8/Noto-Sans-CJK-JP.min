@@ -7,6 +7,10 @@ const SRC_DIR = path.join(__dirname, 'src');
 const DIST_DIR = path.join(__dirname, 'dist');
 const SRC_EXT = /\.(otf|ttf)$/i;
 
+// fontverter labels SFNT-flavored output (CFF/CFF2/glyf) as 'truetype'
+// regardless of the inner outline format.
+const SFNT = 'truetype';
+
 const TARGETS = [
   { format: 'sfnt', ext: 'ttf' },
   { format: 'woff', ext: 'woff' },
@@ -34,30 +38,37 @@ async function loadHarfbuzz() {
       const {
         instance: { exports: hb },
       } = await WebAssembly.instantiate(wasm);
-      return { hb, heap: new Uint8Array(hb.memory.buffer) };
+      return hb;
     })();
   }
   return hbInit;
 }
 
-async function subsetAndStrip(originalFont, text, targetFormat) {
-  const { hb, heap } = await loadHarfbuzz();
+// WASM linear memory may grow on malloc, detaching previously-captured
+// ArrayBuffer views. Re-derive at point of use rather than caching.
+const heapOf = (hb) => new Uint8Array(hb.memory.buffer);
+
+async function subsetToSfnt(originalFont, text) {
+  const hb = await loadHarfbuzz();
 
   // harfbuzz's hb-subset only accepts SFNT input.
-  const sfntInput = await fontverter.convert(originalFont, 'truetype');
+  const sfntInput = await fontverter.convert(originalFont, SFNT);
 
   const input = hb.hb_subset_input_create_or_fail();
   if (input === 0) {
     throw new Error('hb_subset_input_create_or_fail returned zero');
   }
 
-  const fontPtr = hb.malloc(sfntInput.byteLength);
-  heap.set(new Uint8Array(sfntInput), fontPtr);
-  const blob = hb.hb_blob_create(fontPtr, sfntInput.byteLength, 2, 0, 0);
-  const face = hb.hb_face_create(blob, 0);
-  hb.hb_blob_destroy(blob);
-
+  let fontPtr = 0;
+  let face = 0;
+  let subset = 0;
   try {
+    fontPtr = hb.malloc(sfntInput.byteLength);
+    heapOf(hb).set(new Uint8Array(sfntInput), fontPtr);
+    const blob = hb.hb_blob_create(fontPtr, sfntInput.byteLength, 2, 0, 0);
+    face = hb.hb_face_create(blob, 0);
+    hb.hb_blob_destroy(blob);
+
     const dropSet = hb.hb_subset_input_set(input, HB_SUBSET_SETS_DROP_TABLE_TAG);
     for (const tag of DROP_TABLES) {
       hb.hb_set_add(dropSet, hbTag(tag));
@@ -75,25 +86,22 @@ async function subsetAndStrip(originalFont, text, targetFormat) {
       hb.hb_set_add(unicodes, c.codePointAt(0));
     }
 
-    const subset = hb.hb_subset_or_fail(face, input);
+    subset = hb.hb_subset_or_fail(face, input);
     if (subset === 0) {
       throw new Error('hb_subset_or_fail returned zero');
     }
 
-    try {
-      const result = hb.hb_face_reference_blob(subset);
-      const offset = hb.hb_blob_get_data(result, 0);
-      const length = hb.hb_blob_get_length(result);
-      const out = Buffer.from(heap.subarray(offset, offset + length));
-      hb.hb_blob_destroy(result);
-      return await fontverter.convert(out, targetFormat, 'truetype');
-    } finally {
-      hb.hb_face_destroy(subset);
-    }
+    const result = hb.hb_face_reference_blob(subset);
+    const offset = hb.hb_blob_get_data(result, 0);
+    const length = hb.hb_blob_get_length(result);
+    const out = Buffer.from(heapOf(hb).subarray(offset, offset + length));
+    hb.hb_blob_destroy(result);
+    return out;
   } finally {
+    if (subset) hb.hb_face_destroy(subset);
+    if (face) hb.hb_face_destroy(face);
     hb.hb_subset_input_destroy(input);
-    hb.hb_face_destroy(face);
-    hb.free(fontPtr);
+    if (fontPtr) hb.free(fontPtr);
   }
 }
 
@@ -102,7 +110,7 @@ async function readGlyphSet() {
   const parts = await Promise.all(
     files.map((f) => fs.readFile(path.join(LETTERS_DIR, f), 'utf8')),
   );
-  return parts.map((s) => s.replace(/^﻿/, '')).join('');
+  return parts.map((s) => s.replace(/^\uFEFF/, '')).join('');
 }
 
 async function listSrcFonts() {
@@ -114,13 +122,21 @@ async function listSrcFonts() {
 
 async function buildOne(srcFile, text) {
   const baseName = srcFile.replace(SRC_EXT, '');
-  const input = await fs.readFile(path.join(SRC_DIR, srcFile));
-  let failed = 0;
 
+  let sfntSubset;
+  try {
+    const input = await fs.readFile(path.join(SRC_DIR, srcFile));
+    sfntSubset = await subsetToSfnt(input, text);
+  } catch (e) {
+    console.error(`  subset failed: ${e.message}`);
+    return TARGETS.length;
+  }
+
+  let failed = 0;
   for (const { format, ext } of TARGETS) {
     const outPath = path.join(DIST_DIR, `${baseName}.min.${ext}`);
     try {
-      const out = await subsetAndStrip(input, text, format);
+      const out = await fontverter.convert(sfntSubset, format, SFNT);
       await fs.writeFile(outPath, out);
       console.log(
         `  ${path.basename(outPath)}  (${out.length.toLocaleString()} bytes)`,
