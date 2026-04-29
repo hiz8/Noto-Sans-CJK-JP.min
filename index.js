@@ -24,11 +24,18 @@ const TARGETS = [
 const DROP_TABLES = ['GSUB', 'GPOS', 'GDEF', 'kern', 'morx', 'mort'];
 
 const HB_SUBSET_SETS_DROP_TABLE_TAG = 3;
+const HB_SUBSET_FLAGS_NO_HINTING = 0x00000001;
+const HB_SUBSET_FLAGS_DESUBROUTINIZE = 0x00000004;
 const HB_SUBSET_FLAGS_NO_LAYOUT_CLOSURE = 0x00000200;
 
 const hbTag = (s) =>
   s.split('').reduce((a, c) => (a << 8) + c.charCodeAt(0), 0) >>> 0;
 
+const DROP_TAGS = DROP_TABLES.map(hbTag);
+
+// Cached as a module-level singleton: the harfbuzz wasm has a single linear
+// memory, so concurrent subsets would corrupt each other. Safe today because
+// main() drives buildOne() sequentially — revisit if that ever changes.
 let hbInit;
 async function loadHarfbuzz() {
   if (!hbInit) {
@@ -64,21 +71,33 @@ async function subsetToSfnt(originalFont, text) {
   let subset = 0;
   try {
     fontPtr = hb.malloc(sfntInput.byteLength);
+    if (fontPtr === 0) {
+      throw new Error('hb malloc returned zero');
+    }
     heapOf(hb).set(new Uint8Array(sfntInput), fontPtr);
     const blob = hb.hb_blob_create(fontPtr, sfntInput.byteLength, 2, 0, 0);
     face = hb.hb_face_create(blob, 0);
     hb.hb_blob_destroy(blob);
 
     const dropSet = hb.hb_subset_input_set(input, HB_SUBSET_SETS_DROP_TABLE_TAG);
-    for (const tag of DROP_TABLES) {
-      hb.hb_set_add(dropSet, hbTag(tag));
+    for (const tag of DROP_TAGS) {
+      hb.hb_set_add(dropSet, tag);
     }
 
-    // GSUB is being dropped, so layout closure would only waste work and keep
-    // glyphs that aren't reachable without GSUB anyway.
+    // - NO_HINTING strips TT hinting bytecode (no-op for CFF/CFF2 sources but
+    //   meaningful for TTF/glyf inputs).
+    // - DESUBROUTINIZE inlines CFF subroutines: makes the SFNT slightly larger
+    //   on its own, but compresses materially better as WOFF2 — exactly what
+    //   the old `pyftsubset --with-zopfli --desubroutinize` invocation aimed
+    //   for. Important for Noto Sans CJK JP since its outlines are CFF2.
+    // - NO_LAYOUT_CLOSURE: GSUB is being dropped anyway, so closure would only
+    //   waste work and keep glyphs that aren't reachable without GSUB.
     hb.hb_subset_input_set_flags(
       input,
-      hb.hb_subset_input_get_flags(input) | HB_SUBSET_FLAGS_NO_LAYOUT_CLOSURE,
+      hb.hb_subset_input_get_flags(input) |
+        HB_SUBSET_FLAGS_NO_HINTING |
+        HB_SUBSET_FLAGS_DESUBROUTINIZE |
+        HB_SUBSET_FLAGS_NO_LAYOUT_CLOSURE,
     );
 
     const unicodes = hb.hb_subset_input_unicode_set(input);
@@ -114,7 +133,13 @@ async function readGlyphSet() {
 }
 
 async function listSrcFonts() {
-  const entries = await fs.readdir(SRC_DIR, { withFileTypes: true });
+  let entries;
+  try {
+    entries = await fs.readdir(SRC_DIR, { withFileTypes: true });
+  } catch (e) {
+    if (e.code === 'ENOENT') return [];
+    throw e;
+  }
   return entries
     .filter((e) => e.isFile() && SRC_EXT.test(e.name))
     .map((e) => e.name);
