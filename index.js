@@ -1,95 +1,202 @@
-const fs = require('fs');
-const exec = require('child_process').execSync;
+const fs = require('fs/promises');
+const path = require('path');
+const fontverter = require('fontverter');
 
-const config = {
-  lettersPath: './Letters/',
-  inputPath: './src/',
-  outputPath: './dist/',
-};
+const LETTERS_DIR = path.join(__dirname, 'Letters');
+const SRC_DIR = path.join(__dirname, 'src');
+const DIST_DIR = path.join(__dirname, 'dist');
+const SRC_EXT = /\.(otf|ttf)$/i;
 
-async function genTextsFromFile() {
-  const textDir = await fs.promises
-    .readdir(config.lettersPath)
-    .catch(err => console.error(err));
-  let letters = '';
-  let num = 0;
+// fontverter labels SFNT-flavored output (CFF/CFF2/glyf) as 'truetype'
+// regardless of the inner outline format.
+const SFNT = 'truetype';
 
-  for (let i = 0; i < textDir.length; i++) {
-    const textFile = textDir[i];
-    let textFilePath = config.lettersPath + textFile;
+const TARGETS = [
+  { format: 'sfnt', ext: 'ttf' },
+  { format: 'woff', ext: 'woff' },
+  { format: 'woff2', ext: 'woff2' },
+];
 
-    const letter = await fs.promises
-      .readFile(textFilePath, 'utf-8')
-      .catch(err => console.error(err));
+// OpenType layout tables to strip from the subset output. Removing these is
+// what gives the WOFF/WOFF2 a step-change size reduction over a plain subset:
+// CJK GSUB lookups (ligatures, alternates, vertical forms, etc.) are huge.
+// Web rendering does not need them — browsers fall back to default glyphs.
+const DROP_TABLES = ['GSUB', 'GPOS', 'GDEF', 'kern', 'morx', 'mort'];
 
-    letters += letter;
-    num++;
+const HB_SUBSET_SETS_DROP_TABLE_TAG = 3;
+const HB_SUBSET_FLAGS_NO_HINTING = 0x00000001;
+const HB_SUBSET_FLAGS_DESUBROUTINIZE = 0x00000004;
+const HB_SUBSET_FLAGS_NO_LAYOUT_CLOSURE = 0x00000200;
 
-    if (num === textDir.length) {
-      return letters;
+const hbTag = (s) =>
+  s.split('').reduce((a, c) => (a << 8) + c.charCodeAt(0), 0) >>> 0;
+
+const DROP_TAGS = DROP_TABLES.map(hbTag);
+
+// Cached as a module-level singleton: the harfbuzz wasm has a single linear
+// memory, so concurrent subsets would corrupt each other. Safe today because
+// main() drives buildOne() sequentially — revisit if that ever changes.
+let hbInit;
+async function loadHarfbuzz() {
+  if (!hbInit) {
+    hbInit = (async () => {
+      const wasmPath = require.resolve('harfbuzzjs/hb-subset.wasm');
+      const wasm = await fs.readFile(wasmPath);
+      const {
+        instance: { exports: hb },
+      } = await WebAssembly.instantiate(wasm);
+      return hb;
+    })();
+  }
+  return hbInit;
+}
+
+// WASM linear memory may grow on malloc, detaching previously-captured
+// ArrayBuffer views. Re-derive at point of use rather than caching.
+const heapOf = (hb) => new Uint8Array(hb.memory.buffer);
+
+async function subsetToSfnt(originalFont, text) {
+  const hb = await loadHarfbuzz();
+
+  // harfbuzz's hb-subset only accepts SFNT input.
+  const sfntInput = await fontverter.convert(originalFont, SFNT);
+
+  const input = hb.hb_subset_input_create_or_fail();
+  if (input === 0) {
+    throw new Error('hb_subset_input_create_or_fail returned zero');
+  }
+
+  let fontPtr = 0;
+  let face = 0;
+  let subset = 0;
+  try {
+    fontPtr = hb.malloc(sfntInput.byteLength);
+    if (fontPtr === 0) {
+      throw new Error('hb malloc returned zero');
+    }
+    heapOf(hb).set(new Uint8Array(sfntInput), fontPtr);
+    const blob = hb.hb_blob_create(fontPtr, sfntInput.byteLength, 2, 0, 0);
+    face = hb.hb_face_create(blob, 0);
+    hb.hb_blob_destroy(blob);
+
+    const dropSet = hb.hb_subset_input_set(input, HB_SUBSET_SETS_DROP_TABLE_TAG);
+    for (const tag of DROP_TAGS) {
+      hb.hb_set_add(dropSet, tag);
+    }
+
+    // - NO_HINTING strips TT hinting bytecode (no-op for CFF/CFF2 sources but
+    //   meaningful for TTF/glyf inputs).
+    // - DESUBROUTINIZE inlines CFF subroutines: makes the SFNT slightly larger
+    //   on its own, but compresses materially better as WOFF2 — exactly what
+    //   the old `pyftsubset --with-zopfli --desubroutinize` invocation aimed
+    //   for. Important for Noto Sans CJK JP since its outlines are CFF2.
+    // - NO_LAYOUT_CLOSURE: GSUB is being dropped anyway, so closure would only
+    //   waste work and keep glyphs that aren't reachable without GSUB.
+    hb.hb_subset_input_set_flags(
+      input,
+      hb.hb_subset_input_get_flags(input) |
+        HB_SUBSET_FLAGS_NO_HINTING |
+        HB_SUBSET_FLAGS_DESUBROUTINIZE |
+        HB_SUBSET_FLAGS_NO_LAYOUT_CLOSURE,
+    );
+
+    const unicodes = hb.hb_subset_input_unicode_set(input);
+    for (const c of text) {
+      hb.hb_set_add(unicodes, c.codePointAt(0));
+    }
+
+    subset = hb.hb_subset_or_fail(face, input);
+    if (subset === 0) {
+      throw new Error('hb_subset_or_fail returned zero');
+    }
+
+    const result = hb.hb_face_reference_blob(subset);
+    const offset = hb.hb_blob_get_data(result, 0);
+    const length = hb.hb_blob_get_length(result);
+    const out = Buffer.from(heapOf(hb).subarray(offset, offset + length));
+    hb.hb_blob_destroy(result);
+    return out;
+  } finally {
+    if (subset) hb.hb_face_destroy(subset);
+    if (face) hb.hb_face_destroy(face);
+    hb.hb_subset_input_destroy(input);
+    if (fontPtr) hb.free(fontPtr);
+  }
+}
+
+async function readGlyphSet() {
+  const files = await fs.readdir(LETTERS_DIR);
+  const parts = await Promise.all(
+    files.map((f) => fs.readFile(path.join(LETTERS_DIR, f), 'utf8')),
+  );
+  return parts.map((s) => s.replace(/^\uFEFF/, '')).join('');
+}
+
+async function listSrcFonts() {
+  let entries;
+  try {
+    entries = await fs.readdir(SRC_DIR, { withFileTypes: true });
+  } catch (e) {
+    if (e.code === 'ENOENT') return [];
+    throw e;
+  }
+  return entries
+    .filter((e) => e.isFile() && SRC_EXT.test(e.name))
+    .map((e) => e.name);
+}
+
+async function buildOne(srcFile, text) {
+  const baseName = srcFile.replace(SRC_EXT, '');
+
+  let sfntSubset;
+  try {
+    const input = await fs.readFile(path.join(SRC_DIR, srcFile));
+    sfntSubset = await subsetToSfnt(input, text);
+  } catch (e) {
+    console.error(`  subset failed: ${e.message}`);
+    return TARGETS.length;
+  }
+
+  let failed = 0;
+  for (const { format, ext } of TARGETS) {
+    const outPath = path.join(DIST_DIR, `${baseName}.min.${ext}`);
+    try {
+      const out = await fontverter.convert(sfntSubset, format, SFNT);
+      await fs.writeFile(outPath, out);
+      console.log(
+        `  ${path.basename(outPath)}  (${out.length.toLocaleString()} bytes)`,
+      );
+    } catch (e) {
+      failed++;
+      console.error(`  ${path.basename(outPath)} — FAILED: ${e.message}`);
     }
   }
+  return failed;
 }
 
-async function getSrcFonts() {
-  const inputDir = await fs.promises
-    .readdir(config.inputPath)
-    .catch(err => console.error(err));
-
-  return inputDir.filter(fontFile => {
-    return (
-      fs.statSync(config.inputPath + fontFile).isFile() &&
-      /.*\.otf$/.test(fontFile)
-    );
-  });
-}
-
-const subset = async () => {
-  const [text, srcFonts] = await Promise.all([
-    genTextsFromFile(),
-    getSrcFonts(),
-  ]);
-  const tmpTextFile = 'tmpTextFile.txt';
-
-  await fs.promises
-    .writeFile(tmpTextFile, text)
-    .catch(err => console.error(err));
-
-  if (!fs.existsSync(config.outputPath)) {
-    fs.mkdirSync(config.outputPath);
+async function main() {
+  const [text, srcFonts] = await Promise.all([readGlyphSet(), listSrcFonts()]);
+  if (srcFonts.length === 0) {
+    console.error(`No .otf or .ttf files found in ${SRC_DIR}`);
+    process.exit(1);
   }
+  await fs.mkdir(DIST_DIR, { recursive: true });
 
-  srcFonts.forEach((fontFile, fontIndex) => {
-    const reg = /(.*)(?:\.([^.]+$))/;
-    const fontName = fontFile.match(reg)[1];
+  console.log(
+    `Subsetting ${srcFonts.length} font(s) with ${text.length} glyphs:`,
+  );
+  let totalFailed = 0;
+  for (const f of srcFonts) {
+    console.log(`- ${f}`);
+    totalFailed += await buildOne(f, text);
+  }
+  if (totalFailed > 0) {
+    console.error(`\n${totalFailed} target(s) failed.`);
+    process.exit(1);
+  }
+}
 
-    const extensions = ['ttf', 'woff', 'woff2'];
-
-    extensions.forEach((ext, extIndex) => {
-      const flavorOpt =
-        ext === 'woff' || ext === 'woff2' ? `--flavor=${ext} --with-zopfli --desubroutinize` : '';
-      const command = `pyftsubset ./${
-        config.inputPath
-      }${fontFile} --text-file=./${tmpTextFile} --layout-features='*' --output-file=./${
-        config.outputPath
-      }${fontName}.min.${ext} --no-hinting ${flavorOpt}`;
-
-      try {
-        exec(command);
-      } catch (e) {
-        console.error(err);
-      } finally {
-        if (
-          fontIndex + 1 >= srcFonts.length &&
-          extIndex + 1 >= extensions.length
-        ) {
-          fs.unlink(tmpTextFile, err => {
-            if (err) throw err;
-          });
-        }
-      }
-    });
-  });
-};
-
-module.exports = subset();
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
