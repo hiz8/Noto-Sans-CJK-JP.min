@@ -28,19 +28,19 @@ This is Subset of the [Noto Sans CJK JP](http://www.google.com/get/noto/help/cjk
 
 ## Size
 
-| Weight        | otf (Original) | ttf       | woff2     |
-| :------------ | :------------- | :-------- | :-------- |
-| Thin          | `14.２ MB`     | `950 KB`  | `635 KB`  |
-| Light         | `15.６ MB`     | `991 KB`  | `679 KB`  |
-| DemiLight     | `15.6 MB`      | `983 KB`  | `690 KB`  |
-| Regular       | `15.７ MB`     | `980 KB`  | `694 KB`  |
-| Medium        | `15.7 MB`      | `976 KB`  | `699 KB`  |
-| Bold          | `16.2 MB`      | `983 KB`  | `706 KB`  |
-| Black         | `17.0 MB`      | `990 KB`  | `692 KB`  |
-| Variable      | `29.3 MB`      | `1.96 MB` | `1.08 MB` |
-| Mono-Regular  | `15.6 MB`      | `990 KB`  | `693 KB`  |
-| Mono-Bold     | `16.2 MB`      | `994 KB`  | `704 KB`  |
-| Mono-Variable | `28.8 MB`      | `1.94 MB` | `1.08 MB` |
+| Weight        | otf (Original) | ttf       | woff2    |
+| :------------ | :------------- | :-------- | :------- |
+| Thin          | `14.２ MB`     | `823 KB`  | `529 KB` |
+| Light         | `15.６ MB`     | `818 KB`  | `562 KB` |
+| DemiLight     | `15.6 MB`      | `812 KB`  | `568 KB` |
+| Regular       | `15.７ MB`     | `809 KB`  | `571 KB` |
+| Medium        | `15.7 MB`      | `804 KB`  | `574 KB` |
+| Bold          | `16.2 MB`      | `804 KB`  | `577 KB` |
+| Black         | `17.0 MB`      | `810 KB`  | `569 KB` |
+| Variable      | `29.3 MB`      | `1.54 MB` | `933 KB` |
+| Mono-Regular  | `15.6 MB`      | `817 KB`  | `572 KB` |
+| Mono-Bold     | `16.2 MB`      | `812 KB`  | `580 KB` |
+| Mono-Variable | `28.8 MB`      | `1.52 MB` | `930 KB` |
 
 ## Packaging Letters
 
