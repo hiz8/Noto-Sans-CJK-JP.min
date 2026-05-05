@@ -26,8 +26,13 @@ This is Subset of the [Noto Sans CJK JP](http://www.google.com/get/noto/help/cjk
 - WOFF2
 - TTF
 
+## Download
+
+Latest minified font files are published as a zip on the [Releases page](https://github.com/hiz8/Noto-Sans-CJK-JP.min/releases/latest).
+
 ## Size
 
+<!-- size-table:start -->
 | Weight        | otf (Original) | ttf       | woff2    |
 | :------------ | :------------- | :-------- | :------- |
 | Thin          | `14.２ MB`     | `823 KB`  | `529 KB` |
@@ -41,6 +46,7 @@ This is Subset of the [Noto Sans CJK JP](http://www.google.com/get/noto/help/cjk
 | Mono-Regular  | `15.6 MB`      | `817 KB`  | `572 KB` |
 | Mono-Bold     | `16.2 MB`      | `812 KB`  | `580 KB` |
 | Mono-Variable | `28.8 MB`      | `1.52 MB` | `930 KB` |
+<!-- size-table:end -->
 
 ## Packaging Letters
 
