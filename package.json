@@ -4,7 +4,9 @@
   "description": "Subset of the Noto Sans CJK JP for the size down",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "release": "node scripts/release.mjs",
+    "release:dry": "node scripts/release.mjs --dry-run"
   },
   "dependencies": {
     "fontverter": "^2.0.0",
