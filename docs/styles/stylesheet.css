@@ -196,22 +196,42 @@ a:hover {
 .projectHeader {
   width: 100%;
   max-width: 640px;
-  margin: 0 auto 4rem;
+  margin: 0 auto 3rem;
   padding: 0 1rem;
   border-top: 5px solid #3055ff;
   box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    'title   lang'
+    'tagline lang';
+  column-gap: 1rem;
+  align-items: flex-start;
+  padding-block: 1.5rem;
+  gap: 1rem;
 }
 
 .projectHeader__title {
+  grid-area: title;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 2rem;
   color: #3055ff;
+  margin: 0;
 }
 
 .projectHeader__tagline {
+  grid-area: tagline;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 1.5rem;
   font-weight: 400;
+  margin: 0;
+}
+
+.projectHeader__lang {
+  grid-area: lang;
+  justify-self: end;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 1.5rem;
 }
 
 .main_content_wrap {
