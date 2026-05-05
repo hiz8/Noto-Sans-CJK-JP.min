@@ -26,6 +26,10 @@ This is Subset of the [Noto Sans CJK JP](http://www.google.com/get/noto/help/cjk
 - WOFF2
 - TTF
 
+## Download
+
+Latest minified font files are published as a zip on the [Releases page](https://github.com/hiz8/Noto-Sans-CJK-JP.min/releases/latest).
+
 ## Size
 
 <!-- size-table:start -->
